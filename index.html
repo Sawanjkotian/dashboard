@@ -1,0 +1,281 @@
+
+<link href="https://fonts.googleapis.com/css2?family=DM+Sans:wght@400;500;600&display=swap" rel="stylesheet">
+<style>
+  * { box-sizing: border-box; margin: 0; padding: 0; font-family: 'DM Sans', sans-serif; }
+  :root {
+    --navy: #1A2B5F; --yellow: #F5C518; --yellow-soft: #FFFBEA;
+    --blue-light: #E8F4FC; --blue-mid: #6BB8E8;
+    --muted: #7A8AAD; --border: rgba(26,43,95,0.10);
+    --green: #1D9E75; --red: #E24B4A; --amber: #F5A623; --gray: #B0B8CC;
+  }
+  body { background: #F4F6FB; }
+  .shell { min-height: 100vh; background: #F4F6FB; }
+
+  .topnav { background: var(--navy); padding: 0 2.5rem; height: 64px; display: flex; align-items: center; justify-content: space-between; }
+  .nav-logo { display: flex; align-items: center; gap: 12px; }
+  .nav-mark { width: 40px; height: 40px; border-radius: 10px; background: var(--yellow); display: flex; align-items: center; justify-content: center; }
+  .nav-mark svg { width: 22px; height: 22px; fill: var(--navy); }
+  .nav-title { font-size: 18px; font-weight: 600; color: #fff; letter-spacing: -0.01em; }
+  .nav-title span { color: var(--yellow); }
+  .nav-sub { font-size: 12px; color: rgba(255,255,255,0.45); margin-top: 2px; font-weight: 400; }
+  .nav-user { display: flex; align-items: center; gap: 10px; }
+  .nav-avatar { width: 36px; height: 36px; border-radius: 50%; background: var(--yellow); display: flex; align-items: center; justify-content: center; font-size: 13px; font-weight: 600; color: var(--navy); }
+  .nav-name { font-size: 14px; color: #fff; font-weight: 500; }
+
+  .main { padding: 2rem 2.5rem; max-width: 1400px; margin: 0 auto; }
+
+  .section-label { font-size: 11px; font-weight: 600; color: var(--muted); text-transform: uppercase; letter-spacing: 0.12em; margin-bottom: 14px; }
+
+  .metrics-row { display: grid; grid-template-columns: repeat(4, minmax(0,1fr)); gap: 14px; margin-bottom: 2rem; }
+  .metric-card { background: #fff; border-radius: 14px; border: 0.5px solid var(--border); padding: 20px 22px 18px; position: relative; overflow: hidden; }
+  .metric-card::after { content: ''; position: absolute; bottom: 0; left: 0; right: 0; height: 3px; background: var(--yellow); }
+  .metric-card.blue-accent::after { background: var(--blue-mid); }
+  .metric-lbl { font-size: 13px; font-weight: 400; color: var(--muted); margin-bottom: 8px; }
+  .metric-val { font-size: 38px; font-weight: 600; color: var(--navy); line-height: 1; }
+  .metric-val.green { color: var(--green); }
+  .metric-val.red { color: var(--red); }
+  .metric-sub { font-size: 12px; font-weight: 400; color: var(--muted); margin-top: 8px; }
+
+  .filter-bar { display: flex; align-items: center; gap: 10px; margin-bottom: 1.75rem; flex-wrap: wrap; }
+  .chip { padding: 8px 18px; border-radius: 24px; font-size: 13px; font-weight: 500; font-family: 'DM Sans', sans-serif; border: 1px solid var(--border); background: #fff; color: var(--muted); cursor: pointer; transition: all 0.15s; }
+  .chip:hover { background: var(--blue-light); color: var(--navy); }
+  .chip.active-navy { background: var(--navy); border-color: var(--navy); color: #fff; }
+  .chip.active-yellow { background: var(--yellow); border-color: var(--yellow); color: var(--navy); font-weight: 600; }
+  .sep { width: 1px; height: 24px; background: var(--border); margin: 0 2px; }
+
+  .prop-list { display: flex; flex-direction: column; gap: 12px; margin-bottom: 2rem; }
+  .prop-card { background: #fff; border-radius: 14px; border: 0.5px solid var(--border); overflow: hidden; }
+  .prop-header { display: flex; align-items: center; justify-content: space-between; padding: 16px 22px; cursor: pointer; transition: background 0.12s; }
+  .prop-header:hover { background: var(--blue-light); }
+  .prop-left { display: flex; align-items: center; gap: 14px; }
+  .prop-icon { width: 46px; height: 46px; border-radius: 12px; display: flex; align-items: center; justify-content: center; font-size: 20px; flex-shrink: 0; }
+  .prop-name { font-size: 15px; font-weight: 600; color: var(--navy); }
+  .prop-addr { font-size: 12px; font-weight: 400; color: var(--muted); margin-top: 3px; }
+  .prop-right { display: flex; align-items: center; gap: 18px; }
+  .stat-pill { display: flex; align-items: center; gap: 6px; font-size: 13px; font-weight: 400; color: var(--muted); }
+  .dot { width: 8px; height: 8px; border-radius: 50%; flex-shrink: 0; }
+  .d-active { background: var(--green); } .d-idle { background: var(--amber); }
+  .d-error { background: var(--red); } .d-offline { background: var(--gray); }
+  .chevron { font-size: 11px; color: var(--muted); transition: transform 0.2s; margin-left: 4px; }
+  .chevron.open { transform: rotate(90deg); }
+
+  .m-table { border-top: 1px solid var(--border); }
+  .m-row { display: grid; grid-template-columns: 24px 1.4fr 110px 130px 100px 90px 80px; align-items: center; gap: 10px; padding: 12px 22px; border-bottom: 0.5px solid var(--border); font-size: 13px; color: var(--navy); font-weight: 400; }
+  .m-row:last-child { border-bottom: none; }
+  .m-row.hdr { background: var(--blue-light); font-size: 11px; color: var(--muted); font-weight: 600; text-transform: uppercase; letter-spacing: 0.07em; padding: 9px 22px; }
+  .m-name { font-weight: 600; color: var(--navy); }
+  .badge { display: inline-flex; align-items: center; padding: 4px 10px; border-radius: 14px; font-size: 12px; font-weight: 500; font-family: 'DM Sans', sans-serif; }
+  .b-active { background: #E1F5EE; color: #0F6E56; }
+  .b-idle   { background: #FFFBEA; color: #7A5E00; }
+  .b-error  { background: #FCEBEB; color: #A32D2D; }
+  .b-offline{ background: #ECEEF4; color: #5A6480; }
+  .muted { color: var(--muted); }
+  .w-count { font-weight: 600; }
+  .hidden { display: none; }
+
+  .chart-card { background: #fff; border-radius: 14px; border: 0.5px solid var(--border); padding: 22px 24px; }
+  .chart-ttl { font-size: 15px; font-weight: 600; color: var(--navy); margin-bottom: 18px; }
+</style>
+
+<div class="shell">
+  <div class="topnav">
+    <div class="nav-logo">
+      <div class="nav-mark">
+        <svg viewBox="0 0 24 24"><path d="M5 3h14a2 2 0 0 1 2 2v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2zm0 10h14a2 2 0 0 1 2 2v2a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-2a2 2 0 0 1 2-2z"/></svg>
+      </div>
+      <div>
+        <div class="nav-title">Property Admin</div>
+        <div class="nav-sub">Laundry machine control centre</div>
+      </div>
+    </div>
+    <div class="nav-user">
+      <div class="nav-avatar">SK</div>
+      <span class="nav-name">Sawan K</span>
+    </div>
+  </div>
+
+  <div class="main">
+    <div class="section-label">Portfolio overview</div>
+    <div class="metrics-row" id="metricsRow"></div>
+
+    <div class="filter-bar">
+      <div style="display:flex;gap:8px" id="timeFilters">
+        <button class="chip active-navy" onclick="setTime(this,'today')">Today</button>
+        <button class="chip" onclick="setTime(this,'week')">Last 7 days</button>
+        <button class="chip" onclick="setTime(this,'month')">Last 30 days</button>
+      </div>
+      <div class="sep"></div>
+      <button class="chip active-yellow" id="sf-all"    onclick="setStat(this,'all')">All machines</button>
+      <button class="chip"               id="sf-active" onclick="setStat(this,'active')">Active</button>
+      <button class="chip"               id="sf-idle"   onclick="setStat(this,'idle')">Idle</button>
+      <button class="chip"               id="sf-error"  onclick="setStat(this,'error')">Needs attention</button>
+    </div>
+
+    <div class="section-label">Properties &amp; washing machines</div>
+    <div class="prop-list" id="propList"></div>
+
+    <div class="chart-card">
+      <div class="chart-ttl">Successful washes by property</div>
+      <div style="position:relative;width:100%;height:200px">
+        <canvas id="wChart" role="img" aria-label="Bar chart of successful washes per property">Washes per property</canvas>
+      </div>
+    </div>
+  </div>
+</div>
+
+<script src="https://cdnjs.cloudflare.com/ajax/libs/Chart.js/4.4.1/chart.umd.js"></script>
+<script>
+const DATA = [
+  { id:'p1', name:'FF21 Koramangala', addr:'7th Block, Koramangala, Bengaluru', icon:'🏢', bg:'#DAEEF9',
+    machines:[
+      {id:'W-01',status:'active', cycle:'Cotton 60°', rem:'18 min',w:{today:12,week:74,month:289}},
+      {id:'W-02',status:'idle',   cycle:'—',          rem:'—',     w:{today:9, week:61,month:241}},
+      {id:'W-03',status:'error',  cycle:'—',          rem:'—',     w:{today:0, week:14,month:198}},
+    ]},
+  { id:'p2', name:'FF21 HSR Layout', addr:'Sector 4, HSR Layout, Bengaluru', icon:'🏠', bg:'#FFF3C4',
+    machines:[
+      {id:'W-01',status:'active',  cycle:'Quick wash', rem:'9 min',  w:{today:15,week:88,month:312}},
+      {id:'W-02',status:'active',  cycle:'Delicate',   rem:'31 min', w:{today:10,week:72,month:278}},
+      {id:'W-03',status:'offline', cycle:'—',          rem:'—',      w:{today:0, week:0, month:44}},
+    ]},
+  { id:'p3', name:'FF21 Indiranagar', addr:'12th Main, Indiranagar, Bengaluru', icon:'🏗️', bg:'#DAEEF9',
+    machines:[
+      {id:'W-01',status:'idle',   cycle:'—',        rem:'—',      w:{today:7,week:49,month:201}},
+      {id:'W-02',status:'active', cycle:'Low heat', rem:'14 min', w:{today:8,week:53,month:219}},
+    ]},
+  { id:'p4', name:'FF21 Whitefield', addr:'Hope Farm Junction, Whitefield, Bengaluru', icon:'🏡', bg:'#FFF3C4',
+    machines:[
+      {id:'W-01',status:'error',  cycle:'—',          rem:'—',      w:{today:2,week:31,month:178}},
+      {id:'W-02',status:'active', cycle:'Sports 40°', rem:'41 min', w:{today:8,week:55,month:214}},
+      {id:'W-03',status:'idle',   cycle:'—',          rem:'—',      w:{today:5,week:40,month:188}},
+    ]},
+];
+
+let time='today', stat='all';
+const open=new Set(['p1']);
+const slabel=s=>({active:'Running',idle:'Idle',error:'Error',offline:'Offline'}[s]||s);
+const sclass=s=>({active:'b-active',idle:'b-idle',error:'b-error',offline:'b-offline'}[s]||'');
+const dclass=s=>({active:'d-active',idle:'d-idle',error:'d-error',offline:'d-offline'}[s]||'');
+
+function metrics(){
+  let c={active:0,idle:0,error:0,offline:0};
+  DATA.forEach(p=>p.machines.forEach(m=>c[m.status]++));
+  const total=Object.values(c).reduce((a,b)=>a+b,0);
+  const w=DATA.reduce((s,p)=>s+p.machines.reduce((a,m)=>a+m.w[time],0),0);
+  const sub={today:'today',week:'this week',month:'this month'};
+  document.getElementById('metricsRow').innerHTML=`
+    <div class="metric-card">
+      <div class="metric-lbl">Total washers</div>
+      <div class="metric-val">${total}</div>
+      <div class="metric-sub">Across ${DATA.length} properties</div>
+    </div>
+    <div class="metric-card blue-accent">
+      <div class="metric-lbl">Currently running</div>
+      <div class="metric-val green">${c.active}</div>
+      <div class="metric-sub">${c.idle} idle &middot; ${c.offline} offline</div>
+    </div>
+    <div class="metric-card">
+      <div class="metric-lbl">Needs attention</div>
+      <div class="metric-val ${c.error>0?'red':''}">${c.error}</div>
+      <div class="metric-sub">${c.error===0?'All clear':'Fault detected'}</div>
+    </div>
+    <div class="metric-card blue-accent">
+      <div class="metric-lbl">Successful washes</div>
+      <div class="metric-val">${w}</div>
+      <div class="metric-sub">${sub[time]}</div>
+    </div>`;
+}
+
+function props(){
+  const list=document.getElementById('propList');
+  list.innerHTML='';
+  const colHdr=time==='today'?'Today':time==='week'?'7 days':'30 days';
+  DATA.forEach(p=>{
+    const ms=stat==='all'?p.machines:p.machines.filter(m=>m.status===stat);
+    if(!ms.length) return;
+    let c={active:0,idle:0,error:0,offline:0};
+    p.machines.forEach(m=>c[m.status]++);
+    const isOpen=open.has(p.id);
+    const bits=[
+      c.active  ?`<span class="stat-pill"><span class="dot d-active"></span>${c.active} running</span>`:'',
+      c.idle    ?`<span class="stat-pill"><span class="dot d-idle"></span>${c.idle} idle</span>`:'',
+      c.error   ?`<span class="stat-pill"><span class="dot d-error"></span>${c.error} error</span>`:'',
+      c.offline ?`<span class="stat-pill"><span class="dot d-offline"></span>${c.offline} offline</span>`:'',
+    ].join('');
+    const rows=ms.map(m=>{
+      const w=m.w[time],days=time==='today'?1:time==='week'?7:30;
+      return `<div class="m-row">
+        <span><span class="dot ${dclass(m.status)}"></span></span>
+        <span class="m-name">${p.id.replace('p','P')}-${m.id}</span>
+        <span><span class="badge ${sclass(m.status)}">${slabel(m.status)}</span></span>
+        <span class="muted">${m.cycle}</span>
+        <span class="muted">${m.rem}</span>
+        <span class="w-count">${w}</span>
+        <span class="muted">${(w/days).toFixed(1)}</span>
+      </div>`;
+    }).join('');
+    const div=document.createElement('div');
+    div.className='prop-card';
+    div.innerHTML=`
+      <div class="prop-header" onclick="toggle('${p.id}',this)">
+        <div class="prop-left">
+          <div class="prop-icon" style="background:${p.bg}">${p.icon}</div>
+          <div>
+            <div class="prop-name">${p.name}</div>
+            <div class="prop-addr">${p.addr}</div>
+          </div>
+        </div>
+        <div class="prop-right">
+          ${bits}
+          <span class="chevron ${isOpen?'open':''}">▶</span>
+        </div>
+      </div>
+      <div class="m-table ${isOpen?'':'hidden'}" id="t-${p.id}">
+        <div class="m-row hdr"><span></span><span>Machine ID</span><span>Status</span><span>Cycle</span><span>Remaining</span><span>${colHdr}</span><span>Avg/day</span></div>
+        ${rows}
+      </div>`;
+    list.appendChild(div);
+  });
+}
+
+function toggle(id,hdr){
+  const t=document.getElementById('t-'+id),ch=hdr.querySelector('.chevron');
+  open.has(id)?(open.delete(id),t.classList.add('hidden'),ch.classList.remove('open'))
+              :(open.add(id),t.classList.remove('hidden'),ch.classList.add('open'));
+}
+
+function setTime(el,t){
+  time=t;
+  document.getElementById('timeFilters').querySelectorAll('.chip').forEach(c=>c.classList.remove('active-navy'));
+  el.classList.add('active-navy');
+  metrics();props();chart();
+}
+
+function setStat(el,s){
+  stat=s;
+  ['all','active','idle','error'].forEach(k=>document.getElementById('sf-'+k).className='chip');
+  el.className=s==='all'?'chip active-yellow':'chip active-navy';
+  props();
+}
+
+let ch=null;
+function chart(){
+  const labels=DATA.map(p=>p.name.replace('FF21 ','').replace('Zolo ',''));
+  const vals=DATA.map(p=>p.machines.reduce((a,m)=>a+m.w[time],0));
+  if(ch) ch.destroy();
+  ch=new Chart(document.getElementById('wChart'),{
+    type:'bar',
+    data:{labels,datasets:[{label:'Washes',data:vals,backgroundColor:'#1A2B5F',hoverBackgroundColor:'#F5C518',borderRadius:6}]},
+    options:{
+      responsive:true,maintainAspectRatio:false,
+      plugins:{legend:{display:false}},
+      scales:{
+        x:{ticks:{font:{size:12,family:"'DM Sans', sans-serif"},color:'#7A8AAD',autoSkip:false},grid:{display:false},border:{display:false}},
+        y:{ticks:{font:{size:12,family:"'DM Sans', sans-serif"},color:'#7A8AAD'},grid:{color:'rgba(26,43,95,0.06)'},border:{display:false}}
+      }
+    }
+  });
+}
+
+metrics();props();chart();
+</script>
